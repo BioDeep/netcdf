@@ -1,6 +1,6 @@
 interface netcdfHeader {
 
-    version?: string;
+    version?: number;
     globalAttributes?: {};
     variables?: {};
     dimensions?: dimension[];

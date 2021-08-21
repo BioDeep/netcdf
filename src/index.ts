@@ -11,8 +11,12 @@
  */
 class NetCDFReader {
 
+    public header: netcdfHeader;
 
-    constructor(data) {
+
+    constructor(data: number[]) {
+        // https://github.com/image-js/iobuffer
+        // npm i iobuffer
         const buffer = new IOBuffer(data);
         buffer.setBigEndian();
 
