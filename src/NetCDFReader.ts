@@ -69,7 +69,7 @@ class NetCDFReader {
         return this.header.variables;
     }
 
-    constructor(data: number[] | Buffer) {
+    constructor(data: number[] | ArrayBuffer) {
         // https://github.com/image-js/iobuffer
         // npm i iobuffer
         const buffer = new IOBuffer(utils.createInputBuffer(data));

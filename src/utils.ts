@@ -25,8 +25,8 @@ namespace utils {
         }
     }
 
-    export function createInputBuffer(data: number[] | Buffer): InputData {
-        if (data instanceof Buffer) {
+    export function createInputBuffer(data: number[] | ArrayBuffer): InputData {
+        if (data instanceof ArrayBuffer) {
             return data;
         } else {
             return new Uint8Array(data);

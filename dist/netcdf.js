@@ -227,7 +227,7 @@ var utils;
     }
     utils.padding = padding;
     function createInputBuffer(data) {
-        if (data instanceof Buffer) {
+        if (data instanceof ArrayBuffer) {
             return data;
         }
         else {

@@ -51,7 +51,7 @@ declare class NetCDFReader {
     *  * `record`: True if is a record variable, false otherwise
     */
     readonly variables: variable[];
-    constructor(data: number[] | Buffer);
+    constructor(data: number[] | ArrayBuffer);
     /**
      * Returns the value of an attribute
      * @param {string} attributeName
@@ -101,7 +101,7 @@ declare namespace utils {
      * @param {IOBuffer} buffer - Buffer for the file data
      */
     function padding(buffer: any): void;
-    function createInputBuffer(data: number[] | Buffer): InputData;
+    function createInputBuffer(data: number[] | ArrayBuffer): InputData;
     /**
      * Reads the name
      * @ignore
