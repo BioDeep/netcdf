@@ -39,6 +39,9 @@
   <ItemGroup>
     <TypeScriptCompile Include="includes\IOBuffer\IOBuffer.ts" />
     <TypeScriptCompile Include="includes\IOBuffer\utf8.ts" />
+    <TypeScriptCompile Include="index.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="types\data.ts" />
     <TypeScriptCompile Include="header\reader.ts" />
     <TypeScriptCompile Include="includes\header.d.ts">
@@ -55,9 +58,6 @@
     </TypeScriptCompile>
     <TypeScriptCompile Include="NetCDFReader.ts" />
     <TypeScriptCompile Include="toString.ts" />
-    <TypeScriptCompile Include="index.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
     <TypeScriptCompile Include="types\types.ts" />
     <TypeScriptCompile Include="types\reader.ts">
       <SubType>Code</SubType>

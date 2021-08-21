@@ -167,4 +167,20 @@ class NetCDFReader {
         const attribute = this.globalAttributes.find(val => val.name === attributeName);
         return attribute !== undefined;
     }
+
+    public static fetch(url: string, callback: XhrFetch) {
+        const xhr = new XMLHttpRequest();
+
+        xhr.open("GET", url);
+        xhr.responseType = 'arraybuffer';
+        xhr.send();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                const buffer: ArrayBuffer = new Uint8Array(xhr.response);
+                const cdf = new NetCDFReader(buffer);
+
+                callback(cdf);
+            }
+        }
+    }
 }
