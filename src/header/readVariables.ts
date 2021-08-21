@@ -80,9 +80,7 @@ module header {
                 dimensions: dimensionsIds,
                 attributes,
                 type: global.type.num2str(type),
-                size: varSize,
-                offset,
-                record
+                size: varSize, offset, record
             };
         }
 

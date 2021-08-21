@@ -22,7 +22,12 @@ interface dimension {
 
 interface variable {
     name: string;
-
+    dimensions: number[];
+    attributes: attribute[];
+    type: string;
+    size: number;
+    offset: number;
+    record: boolean;
 }
 
 interface attribute {
