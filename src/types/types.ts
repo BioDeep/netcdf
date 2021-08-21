@@ -11,7 +11,7 @@ namespace type {
      * 
      * > https://pro.arcgis.com/en/pro-app/latest/help/data/multidimensional/data-types-supported-by-netcdf.htm
      */
-    export const types = {
+    export const cdfTypes = {
         BYTE: 1,
         CHAR: 2,
         SHORT: 3,

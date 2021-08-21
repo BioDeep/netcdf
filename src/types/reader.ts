@@ -8,17 +8,17 @@ namespace type {
     */
     export function num2str(type) {
         switch (Number(type)) {
-            case types.BYTE:
+            case cdfTypes.BYTE:
                 return 'byte';
-            case types.CHAR:
+            case cdfTypes.CHAR:
                 return 'char';
-            case types.SHORT:
+            case cdfTypes.SHORT:
                 return 'short';
-            case types.INT:
+            case cdfTypes.INT:
                 return 'int';
-            case types.FLOAT:
+            case cdfTypes.FLOAT:
                 return 'float';
-            case types.DOUBLE:
+            case cdfTypes.DOUBLE:
                 return 'double';
             /* istanbul ignore next */
             default:
@@ -34,17 +34,17 @@ namespace type {
      */
     export function num2bytes(type) {
         switch (Number(type)) {
-            case types.BYTE:
+            case cdfTypes.BYTE:
                 return 1;
-            case types.CHAR:
+            case cdfTypes.CHAR:
                 return 1;
-            case types.SHORT:
+            case cdfTypes.SHORT:
                 return 2;
-            case types.INT:
+            case cdfTypes.INT:
                 return 4;
-            case types.FLOAT:
+            case cdfTypes.FLOAT:
                 return 4;
-            case types.DOUBLE:
+            case cdfTypes.DOUBLE:
                 return 8;
             /* istanbul ignore next */
             default:
@@ -61,17 +61,17 @@ namespace type {
     export function str2num(type) {
         switch (String(type)) {
             case 'byte':
-                return types.BYTE;
+                return cdfTypes.BYTE;
             case 'char':
-                return types.CHAR;
+                return cdfTypes.CHAR;
             case 'short':
-                return types.SHORT;
+                return cdfTypes.SHORT;
             case 'int':
-                return types.INT;
+                return cdfTypes.INT;
             case 'float':
-                return types.FLOAT;
+                return cdfTypes.FLOAT;
             case 'double':
-                return types.DOUBLE;
+                return cdfTypes.DOUBLE;
             /* istanbul ignore next */
             default:
                 return -1;
@@ -107,17 +107,17 @@ namespace type {
      */
     export function readType(buffer: IOBuffer, type: number, size: number) {
         switch (type) {
-            case types.BYTE:
+            case cdfTypes.BYTE:
                 return buffer.readBytes(size);
-            case types.CHAR:
+            case cdfTypes.CHAR:
                 return trimNull(buffer.readChars(size));
-            case types.SHORT:
+            case cdfTypes.SHORT:
                 return readNumber(size, buffer.readInt16.bind(buffer));
-            case types.INT:
+            case cdfTypes.INT:
                 return readNumber(size, buffer.readInt32.bind(buffer));
-            case types.FLOAT:
+            case cdfTypes.FLOAT:
                 return readNumber(size, buffer.readFloat32.bind(buffer));
-            case types.DOUBLE:
+            case cdfTypes.DOUBLE:
                 return readNumber(size, buffer.readFloat64.bind(buffer));
             /* istanbul ignore next */
             default:
