@@ -26,8 +26,7 @@ namespace utils {
     }
 
     export function createInputBuffer(data: number[]): InputData {
-
-
+        return new Uint8Array(data);
     }
 
     /**
