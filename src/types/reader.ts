@@ -105,7 +105,7 @@ namespace type {
      * @param {number} size - Size of the element to read
      * @return {string|Array<number>|number}
      */
-    export function readType(buffer, type, size) {
+    export function readType(buffer: IOBuffer, type: number, size: number) {
         switch (type) {
             case types.BYTE:
                 return buffer.readBytes(size);
@@ -121,7 +121,7 @@ namespace type {
                 return readNumber(size, buffer.readFloat64.bind(buffer));
             /* istanbul ignore next */
             default:
-                notNetcdf(true, `non valid type ${type}`);
+                utils.notNetcdf(true, `non valid type ${type}`);
                 return undefined;
         }
     }
@@ -132,7 +132,7 @@ namespace type {
      * @param {string} value - String to trim
      * @return {string} - Trimmed string
      */
-    export function trimNull(value) {
+    export function trimNull(value: string) {
         if (value.charCodeAt(value.length - 1) === 0) {
             return value.substring(0, value.length - 1);
         }
