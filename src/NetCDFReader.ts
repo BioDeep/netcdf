@@ -74,6 +74,7 @@ class NetCDFReader {
         // npm i iobuffer
         const buffer = new IOBuffer(utils.createInputBuffer(data));
 
+        buffer.seek(0);
         buffer.setBigEndian();
         // Validate that it's a NetCDF file
         utils.notNetcdf(buffer.readChars(3) !== 'CDF', 'should start with CDF');
