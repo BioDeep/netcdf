@@ -26,7 +26,9 @@ namespace utils {
     }
 
     export function createInputBuffer(data: number[] | ArrayBuffer): InputData {
-        if (data instanceof ArrayBuffer) {
+        if (!data || data == undefined) {
+            throw "empty data is not allowed!";
+        } else if (data instanceof ArrayBuffer) {
             return data;
         } else {
             return new Uint8Array(data);

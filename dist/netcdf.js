@@ -13,6 +13,7 @@ var NetCDFReader = /** @class */ (function () {
         // https://github.com/image-js/iobuffer
         // npm i iobuffer
         var buffer = new IOBuffer(utils.createInputBuffer(data));
+        buffer.seek(0);
         buffer.setBigEndian();
         // Validate that it's a NetCDF file
         utils.notNetcdf(buffer.readChars(3) !== 'CDF', 'should start with CDF');
@@ -227,7 +228,10 @@ var utils;
     }
     utils.padding = padding;
     function createInputBuffer(data) {
-        if (data instanceof ArrayBuffer) {
+        if (!data || data == undefined) {
+            throw "empty data is not allowed!";
+        }
+        else if (data instanceof ArrayBuffer) {
             return data;
         }
         else {
