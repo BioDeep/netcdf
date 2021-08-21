@@ -1,8 +1,8 @@
 interface netcdfHeader {
 
     version?: number;
-    globalAttributes?: {};
-    variables?: {};
+    globalAttributes?: attribute[];
+    variables?: variable[];
     dimensions?: dimension[];
 
     recordDimension: {
@@ -17,4 +17,13 @@ interface netcdfHeader {
 
 interface dimension {
 
+}
+
+interface variable {
+    name: string;
+
+}
+
+interface attribute {
+    name: string;
 }

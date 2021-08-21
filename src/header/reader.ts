@@ -19,7 +19,7 @@ module header {
      *  * `globalAttributes`: List of global attributes
      *  * `variables`: List of variables
      */
-    export function header(buffer, version): netcdfHeader {
+    export function readHeader(buffer: IOBuffer, version: number): netcdfHeader {
         // Length of record dimension
         // sum of the varSize's of all the record variables.
         const header: netcdfHeader = { recordDimension: { length: buffer.readUint32() } };

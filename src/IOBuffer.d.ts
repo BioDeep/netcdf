@@ -6,7 +6,8 @@ interface IOBufferOptions {
      */
     offset?: number;
 }
-export declare class IOBuffer {
+
+declare class IOBuffer {
     /**
      * Reference to the internal ArrayBuffer object.
      */
@@ -248,4 +249,4 @@ export declare class IOBuffer {
      */
     private _updateLastWrittenByte;
 }
-export {};
+

@@ -25,6 +25,10 @@ namespace utils {
         }
     }
 
+    export function createInputBuffer(data: number[]): InputData {
+
+
+    }
 
     /**
      * Reads the name

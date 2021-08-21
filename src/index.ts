@@ -1,4 +1,4 @@
-///<reference path="../lib/IOBuffer.d.ts" />
+///<reference path="IOBuffer.d.ts" />
 
 'use strict';
 
@@ -19,9 +19,9 @@ class NetCDFReader {
     constructor(data: number[]) {
         // https://github.com/image-js/iobuffer
         // npm i iobuffer
-        const buffer = new IOBuffer(data);
-        buffer.setBigEndian();
+        const buffer = new IOBuffer(utils.createInputBuffer(data));
 
+        buffer.setBigEndian();
         // Validate that it's a NetCDF file
         utils.notNetcdf(buffer.readChars(3) !== 'CDF', 'should start with CDF');
 
@@ -30,7 +30,7 @@ class NetCDFReader {
         utils.notNetcdf(version > 2, 'unknown version');
 
         // Read the header
-        this.header = readHeader(buffer, version);
+        this.header = header.readHeader(buffer, version);
         this.buffer = buffer;
     }
 
@@ -81,9 +81,7 @@ class NetCDFReader {
      * @return {string} Value of the attributeName or null
      */
     getAttribute(attributeName) {
-        const attribute = this.globalAttributes.find(
-            (val) => val.name === attributeName
-        );
+        const attribute = this.globalAttributes.find((val) => val.name === attributeName);
         if (attribute) return attribute.value;
         return null;
     }
@@ -126,9 +124,7 @@ class NetCDFReader {
         let variable;
         if (typeof variableName === 'string') {
             // search the variable
-            variable = this.header.variables.find(function (val) {
-                return val.name === variableName;
-            });
+            variable = this.header.variables.find(val => val.name === variableName);
         } else {
             variable = variableName;
         }
@@ -169,9 +165,7 @@ class NetCDFReader {
      * @return {boolean}
      */
     attributeExists(attributeName) {
-        const attribute = this.globalAttributes.find(
-            (val) => val.name === attributeName
-        );
+        const attribute = this.globalAttributes.find(val => val.name === attributeName);
         return attribute !== undefined;
     }
 }
