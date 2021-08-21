@@ -12,7 +12,7 @@
 class NetCDFReader {
 
     public header: netcdfHeader;
-
+    public buffer: IOBuffer;
 
     constructor(data: number[]) {
         // https://github.com/image-js/iobuffer
@@ -111,8 +111,8 @@ class NetCDFReader {
         return this.header.variables;
     }
 
-    toString() {
-        return toString.call(this);
+    toString(): string {
+        return debug.toString(this);
     }
 
     /**

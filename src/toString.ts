@@ -2,25 +2,25 @@
 
 namespace debug {
 
-    function toString() {
+    export function toString(cdf: NetCDFReader): string {
         let result = [];
 
         result.push('DIMENSIONS');
-        for (let dimension of this.dimensions) {
+        for (let dimension of cdf.dimensions) {
             result.push(`  ${dimension.name.padEnd(30)} = size: ${dimension.size}`);
         }
 
         result.push('');
         result.push('GLOBAL ATTRIBUTES');
-        for (let attribute of this.globalAttributes) {
+        for (let attribute of cdf.globalAttributes) {
             result.push(`  ${attribute.name.padEnd(30)} = ${attribute.value}`);
         }
 
-        let variables = JSON.parse(JSON.stringify(this.variables));
+        let variables = JSON.parse(JSON.stringify(cdf.variables));
         result.push('');
         result.push('VARIABLES:');
         for (let variable of variables) {
-            variable.value = this.getDataVariable(variable);
+            variable.value = cdf.getDataVariable(variable);
             let stringify = JSON.stringify(variable.value);
             if (stringify.length > 50) stringify = stringify.substring(0, 50);
             if (!isNaN(variable.value.length)) {
