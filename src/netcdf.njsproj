@@ -40,6 +40,15 @@
     <TypeScriptCompile Include="header\header.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="header\readVariables.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="header\readDimensions.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="header\readAttributes.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="index.ts" />
     <TypeScriptCompile Include="toString.ts" />
     <TypeScriptCompile Include="types\types.ts" />

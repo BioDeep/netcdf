@@ -26,4 +26,6 @@ interface variable {
 
 interface attribute {
     name: string;
+    type: string;
+    value: any;
 }
