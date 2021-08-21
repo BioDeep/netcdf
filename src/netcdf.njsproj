@@ -37,7 +37,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="data.ts" />
     <TypeScriptCompile Include="header\reader.ts" />
-    <TypeScriptCompile Include="header\header.ts">
+    <TypeScriptCompile Include="includes\header.d.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="header\readVariables.ts">
@@ -49,8 +49,12 @@
     <TypeScriptCompile Include="header\readAttributes.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="includes\IOBuffer.d.ts" />
     <TypeScriptCompile Include="NetCDFReader.ts" />
     <TypeScriptCompile Include="toString.ts" />
+    <TypeScriptCompile Include="index.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="types\types.ts" />
     <TypeScriptCompile Include="types\reader.ts">
       <SubType>Code</SubType>
@@ -59,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="header\" />
+    <Folder Include="includes\" />
     <Folder Include="types\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
