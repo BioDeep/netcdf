@@ -35,14 +35,14 @@ module header {
 
             // Read attribute
             var size = buffer.readUint32();
-            var value = global.type.readType(buffer, type, size);
+            var value = Type.readType(buffer, type, size);
 
             // Apply padding
             utils.padding(buffer);
 
             attributes[gAtt] = {
                 name: name,
-                type: global.type.num2str(type),
+                type: Type.num2str(type),
                 value: value
             };
         }

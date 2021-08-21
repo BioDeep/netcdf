@@ -436,7 +436,7 @@ declare namespace utf8 {
     function decode(bytes: Uint8Array): string;
     function encode(str: string): Uint8Array;
 }
-declare module data {
+declare module Type {
     const STREAMING = 4294967295;
     /**
      * Read data for the given non-record variable
@@ -456,21 +456,21 @@ declare module data {
      */
     function record(buffer: any, variable: any, recordDimension: any): any[];
 }
-declare namespace type {
+declare namespace Type {
     /**
     * Parse a number into their respective type
     * @ignore
     * @param {number} type - integer that represents the type
     * @return {string} - parsed value of the type
     */
-    function num2str(type: any): "undefined" | "byte" | "char" | "short" | "int" | "float" | "double";
+    function num2str(type: any): "byte" | "char" | "short" | "int" | "float" | "double" | "undefined";
     /**
      * Parse a number type identifier to his size in bytes
      * @ignore
      * @param {number} type - integer that represents the type
      * @return {number} -size of the type
      */
-    function num2bytes(type: any): 1 | 2 | 4 | 8 | -1;
+    function num2bytes(type: any): 1 | 2 | 4 | -1 | 8;
     /**
      * Reverse search of num2str
      * @ignore
@@ -503,7 +503,7 @@ declare namespace type {
      */
     function trimNull(value: string): string;
 }
-declare namespace type {
+declare namespace Type {
     /**
      * data types in netcdf data file
      *
@@ -513,7 +513,7 @@ declare namespace type {
      *
      * > https://pro.arcgis.com/en/pro-app/latest/help/data/multidimensional/data-types-supported-by-netcdf.htm
      */
-    const types: {
+    const cdfTypes: {
         BYTE: number;
         CHAR: number;
         SHORT: number;

@@ -140,11 +140,11 @@ var NetCDFReader = /** @class */ (function () {
         this.buffer.seek(variable.offset);
         if (variable.record) {
             // record variable case
-            return data.record(this.buffer, variable, this.header.recordDimension);
+            return Type.record(this.buffer, variable, this.header.recordDimension);
         }
         else {
             // non-record variable case
-            return data.nonRecord(this.buffer, variable);
+            return Type.nonRecord(this.buffer, variable);
         }
     };
     /**
@@ -292,12 +292,12 @@ var header;
             utils.notNetcdf(((type < 1) || (type > 6)), "non valid type " + type);
             // Read attribute
             var size = buffer.readUint32();
-            var value = global.type.readType(buffer, type, size);
+            var value = Type.readType(buffer, type, size);
             // Apply padding
             utils.padding(buffer);
             attributes[gAtt] = {
                 name: name,
-                type: global.type.num2str(type),
+                type: Type.num2str(type),
                 value: value
             };
         }
@@ -435,7 +435,7 @@ var header;
                 name: name,
                 dimensions: dimensionsIds,
                 attributes: attributes,
-                type: global.type.num2str(type),
+                type: Type.num2str(type),
                 size: varSize, offset: offset, record: record
             };
         }
@@ -1103,9 +1103,9 @@ var utf8;
     }
     utf8.encode = encode;
 })(utf8 || (utf8 = {}));
-var data;
-(function (data_1) {
-    data_1.STREAMING = 4294967295;
+var Type;
+(function (Type) {
+    Type.STREAMING = 4294967295;
     /**
      * Read data for the given non-record variable
      * @ignore
@@ -1115,17 +1115,17 @@ var data;
      */
     function nonRecord(buffer, variable) {
         // variable type
-        var type = global.type.str2num(variable.type);
+        var type = Type.str2num(variable.type);
         // size of the data
-        var size = variable.size / global.type.num2bytes(type);
+        var size = variable.size / Type.num2bytes(type);
         // iterates over the data
         var data = new Array(size);
         for (var i = 0; i < size; i++) {
-            data[i] = global.type.readType(buffer, type, 1);
+            data[i] = Type.readType(buffer, type, 1);
         }
         return data;
     }
-    data_1.nonRecord = nonRecord;
+    Type.nonRecord = nonRecord;
     /**
      * Read data for the given record variable
      * @ignore
@@ -1136,8 +1136,8 @@ var data;
      */
     function record(buffer, variable, recordDimension) {
         // variable type
-        var type = global.type.str2num(variable.type);
-        var width = variable.size ? variable.size / global.type.num2bytes(type) : 1;
+        var type = Type.str2num(variable.type);
+        var width = variable.size ? variable.size / Type.num2bytes(type) : 1;
         // size of the data
         // TODO streaming data
         var size = recordDimension.length;
@@ -1146,15 +1146,15 @@ var data;
         var step = recordDimension.recordStep;
         for (var i = 0; i < size; i++) {
             var currentOffset = buffer.offset;
-            data[i] = global.type.readType(buffer, type, width);
+            data[i] = Type.readType(buffer, type, width);
             buffer.seek(currentOffset + step);
         }
         return data;
     }
-    data_1.record = record;
-})(data || (data = {}));
-var type;
-(function (type_1) {
+    Type.record = record;
+})(Type || (Type = {}));
+var Type;
+(function (Type) {
     /**
     * Parse a number into their respective type
     * @ignore
@@ -1163,24 +1163,24 @@ var type;
     */
     function num2str(type) {
         switch (Number(type)) {
-            case type_1.types.BYTE:
+            case Type.cdfTypes.BYTE:
                 return 'byte';
-            case type_1.types.CHAR:
+            case Type.cdfTypes.CHAR:
                 return 'char';
-            case type_1.types.SHORT:
+            case Type.cdfTypes.SHORT:
                 return 'short';
-            case type_1.types.INT:
+            case Type.cdfTypes.INT:
                 return 'int';
-            case type_1.types.FLOAT:
+            case Type.cdfTypes.FLOAT:
                 return 'float';
-            case type_1.types.DOUBLE:
+            case Type.cdfTypes.DOUBLE:
                 return 'double';
             /* istanbul ignore next */
             default:
                 return 'undefined';
         }
     }
-    type_1.num2str = num2str;
+    Type.num2str = num2str;
     /**
      * Parse a number type identifier to his size in bytes
      * @ignore
@@ -1189,24 +1189,24 @@ var type;
      */
     function num2bytes(type) {
         switch (Number(type)) {
-            case type_1.types.BYTE:
+            case Type.cdfTypes.BYTE:
                 return 1;
-            case type_1.types.CHAR:
+            case Type.cdfTypes.CHAR:
                 return 1;
-            case type_1.types.SHORT:
+            case Type.cdfTypes.SHORT:
                 return 2;
-            case type_1.types.INT:
+            case Type.cdfTypes.INT:
                 return 4;
-            case type_1.types.FLOAT:
+            case Type.cdfTypes.FLOAT:
                 return 4;
-            case type_1.types.DOUBLE:
+            case Type.cdfTypes.DOUBLE:
                 return 8;
             /* istanbul ignore next */
             default:
                 return -1;
         }
     }
-    type_1.num2bytes = num2bytes;
+    Type.num2bytes = num2bytes;
     /**
      * Reverse search of num2str
      * @ignore
@@ -1216,23 +1216,23 @@ var type;
     function str2num(type) {
         switch (String(type)) {
             case 'byte':
-                return type_1.types.BYTE;
+                return Type.cdfTypes.BYTE;
             case 'char':
-                return type_1.types.CHAR;
+                return Type.cdfTypes.CHAR;
             case 'short':
-                return type_1.types.SHORT;
+                return Type.cdfTypes.SHORT;
             case 'int':
-                return type_1.types.INT;
+                return Type.cdfTypes.INT;
             case 'float':
-                return type_1.types.FLOAT;
+                return Type.cdfTypes.FLOAT;
             case 'double':
-                return type_1.types.DOUBLE;
+                return Type.cdfTypes.DOUBLE;
             /* istanbul ignore next */
             default:
                 return -1;
         }
     }
-    type_1.str2num = str2num;
+    Type.str2num = str2num;
     /**
      * Auxiliary function to read numeric data
      * @ignore
@@ -1252,7 +1252,7 @@ var type;
             return bufferReader();
         }
     }
-    type_1.readNumber = readNumber;
+    Type.readNumber = readNumber;
     /**
      * Given a type and a size reads the next element
      * @ignore
@@ -1263,17 +1263,17 @@ var type;
      */
     function readType(buffer, type, size) {
         switch (type) {
-            case type_1.types.BYTE:
+            case Type.cdfTypes.BYTE:
                 return buffer.readBytes(size);
-            case type_1.types.CHAR:
+            case Type.cdfTypes.CHAR:
                 return trimNull(buffer.readChars(size));
-            case type_1.types.SHORT:
+            case Type.cdfTypes.SHORT:
                 return readNumber(size, buffer.readInt16.bind(buffer));
-            case type_1.types.INT:
+            case Type.cdfTypes.INT:
                 return readNumber(size, buffer.readInt32.bind(buffer));
-            case type_1.types.FLOAT:
+            case Type.cdfTypes.FLOAT:
                 return readNumber(size, buffer.readFloat32.bind(buffer));
-            case type_1.types.DOUBLE:
+            case Type.cdfTypes.DOUBLE:
                 return readNumber(size, buffer.readFloat64.bind(buffer));
             /* istanbul ignore next */
             default:
@@ -1281,7 +1281,7 @@ var type;
                 return undefined;
         }
     }
-    type_1.readType = readType;
+    Type.readType = readType;
     /**
      * Removes null terminate value
      * @ignore
@@ -1294,10 +1294,10 @@ var type;
         }
         return value;
     }
-    type_1.trimNull = trimNull;
-})(type || (type = {}));
-var type;
-(function (type) {
+    Type.trimNull = trimNull;
+})(Type || (Type = {}));
+var Type;
+(function (Type) {
     /**
      * data types in netcdf data file
      *
@@ -1307,7 +1307,7 @@ var type;
      *
      * > https://pro.arcgis.com/en/pro-app/latest/help/data/multidimensional/data-types-supported-by-netcdf.htm
      */
-    type.types = {
+    Type.cdfTypes = {
         BYTE: 1,
         CHAR: 2,
         SHORT: 3,
@@ -1315,5 +1315,5 @@ var type;
         FLOAT: 5,
         DOUBLE: 6
     };
-})(type || (type = {}));
+})(Type || (Type = {}));
 //# sourceMappingURL=netcdf.js.map

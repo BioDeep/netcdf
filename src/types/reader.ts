@@ -1,4 +1,4 @@
-namespace type {
+namespace Type {
 
     /**
     * Parse a number into their respective type

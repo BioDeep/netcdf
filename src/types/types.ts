@@ -1,6 +1,6 @@
 'use strict';
 
-namespace type {
+namespace Type {
 
     /**
      * data types in netcdf data file

@@ -79,7 +79,7 @@ module header {
                 name: name,
                 dimensions: dimensionsIds,
                 attributes,
-                type: global.type.num2str(type),
+                type: Type.num2str(type),
                 size: varSize, offset, record
             };
         }

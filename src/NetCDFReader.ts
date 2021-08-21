@@ -139,10 +139,10 @@ class NetCDFReader {
 
         if (variable.record) {
             // record variable case
-            return data.record(this.buffer, variable, this.header.recordDimension);
+            return Type.record(this.buffer, variable, this.header.recordDimension);
         } else {
             // non-record variable case
-            return data.nonRecord(this.buffer, variable);
+            return Type.nonRecord(this.buffer, variable);
         }
     }
 
