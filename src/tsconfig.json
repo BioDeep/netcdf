@@ -1,9 +1,13 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "AMD",
     "target": "es5",
-    "lib": ["es5"],
-    "sourceMap": true
+    "lib": [ "dom", "es5", "dom.iterable", "scripthost" ],
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
+    "outDir": "../dist",
+    "outFile": "../dist/netcdf.js",
+    "declaration": true
   },
   "exclude": [
     "node_modules"
