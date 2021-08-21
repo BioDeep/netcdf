@@ -49,7 +49,7 @@
     <TypeScriptCompile Include="header\readAttributes.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="index.ts" />
+    <TypeScriptCompile Include="NetCDFReader.ts" />
     <TypeScriptCompile Include="toString.ts" />
     <TypeScriptCompile Include="types\types.ts" />
     <TypeScriptCompile Include="types\reader.ts">
