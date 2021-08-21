@@ -83,6 +83,10 @@ declare class NetCDFReader {
      * @return {boolean}
      */
     attributeExists(attributeName: string): boolean;
+    static fetch(url: string, callback: XhrFetch): void;
+}
+interface XhrFetch {
+    (netcdf: NetCDFReader): void;
 }
 declare namespace debug {
     function toString(cdf: NetCDFReader): string;

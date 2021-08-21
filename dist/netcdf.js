@@ -167,6 +167,19 @@ var NetCDFReader = /** @class */ (function () {
         var attribute = this.globalAttributes.find(function (val) { return val.name === attributeName; });
         return attribute !== undefined;
     };
+    NetCDFReader.fetch = function (url, callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url);
+        xhr.responseType = 'arraybuffer';
+        xhr.send();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                var buffer = new Uint8Array(xhr.response);
+                var cdf = new NetCDFReader(buffer);
+                callback(cdf);
+            }
+        };
+    };
     return NetCDFReader;
 }());
 var debug;
