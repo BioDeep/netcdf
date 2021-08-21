@@ -30,11 +30,15 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="includes\IOBuffer\README.md" />
+    <Content Include="includes\IOBuffer\text-encoding-polyfill.ts" />
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Content Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="includes\IOBuffer\IOBuffer.ts" />
+    <TypeScriptCompile Include="includes\IOBuffer\utf8.ts" />
     <TypeScriptCompile Include="types\data.ts" />
     <TypeScriptCompile Include="header\reader.ts" />
     <TypeScriptCompile Include="includes\header.d.ts">
@@ -49,7 +53,6 @@
     <TypeScriptCompile Include="header\readAttributes.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="includes\IOBuffer.d.ts" />
     <TypeScriptCompile Include="NetCDFReader.ts" />
     <TypeScriptCompile Include="toString.ts" />
     <TypeScriptCompile Include="index.ts">
@@ -64,6 +67,7 @@
   <ItemGroup>
     <Folder Include="header\" />
     <Folder Include="includes\" />
+    <Folder Include="includes\IOBuffer\" />
     <Folder Include="types\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
