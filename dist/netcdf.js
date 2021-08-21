@@ -1,4 +1,3 @@
-///<reference path="IOBuffer.d.ts" />
 'use strict';
 /**
  * Reads a NetCDF v3.x file

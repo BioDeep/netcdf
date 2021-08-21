@@ -1,5 +1,3 @@
-///<reference path="IOBuffer.d.ts" />
-
 'use strict';
 
 /**
