@@ -2,7 +2,7 @@
 
 module data {
 
-    // const STREAMING = 4294967295;
+    export const STREAMING = 4294967295;
 
     /**
      * Read data for the given non-record variable
@@ -56,5 +56,4 @@ module data {
 
         return data;
     }
-
 }

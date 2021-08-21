@@ -35,7 +35,7 @@
     <Content Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="data.ts" />
+    <TypeScriptCompile Include="types\data.ts" />
     <TypeScriptCompile Include="header\reader.ts" />
     <TypeScriptCompile Include="includes\header.d.ts">
       <SubType>Code</SubType>
