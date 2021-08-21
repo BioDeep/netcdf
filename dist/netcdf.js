@@ -481,6 +481,625 @@ var header;
     }
     header_1.readHeader = readHeader;
 })(header || (header = {}));
+var defaultByteLength = 1024 * 8;
+var IOBuffer = /** @class */ (function () {
+    /**
+     * @param data - The data to construct the IOBuffer with.
+     * If data is a number, it will be the new buffer's length<br>
+     * If data is `undefined`, the buffer will be initialized with a default length of 8Kb<br>
+     * If data is an ArrayBuffer, SharedArrayBuffer, an ArrayBufferView (Typed Array), an IOBuffer instance,
+     * or a Node.js Buffer, a view will be created over the underlying ArrayBuffer.
+     * @param options
+     */
+    function IOBuffer(data, options) {
+        if (data === void 0) { data = defaultByteLength; }
+        if (options === void 0) { options = {}; }
+        var dataIsGiven = false;
+        if (typeof data === 'number') {
+            data = new ArrayBuffer(data);
+        }
+        else {
+            dataIsGiven = true;
+            this.lastWrittenByte = data.byteLength;
+        }
+        var offset = options.offset ? options.offset >>> 0 : 0;
+        var byteLength = data.byteLength - offset;
+        var dvOffset = offset;
+        if (ArrayBuffer.isView(data) || data instanceof IOBuffer) {
+            if (data.byteLength !== data.buffer.byteLength) {
+                dvOffset = data.byteOffset + offset;
+            }
+            data = data.buffer;
+        }
+        if (dataIsGiven) {
+            this.lastWrittenByte = byteLength;
+        }
+        else {
+            this.lastWrittenByte = 0;
+        }
+        this.buffer = data;
+        this.length = byteLength;
+        this.byteLength = byteLength;
+        this.byteOffset = dvOffset;
+        this.offset = 0;
+        this.littleEndian = true;
+        this._data = new DataView(this.buffer, dvOffset, byteLength);
+        this._mark = 0;
+        this._marks = [];
+    }
+    /**
+     * Checks if the memory allocated to the buffer is sufficient to store more
+     * bytes after the offset.
+     * @param byteLength - The needed memory in bytes.
+     * @returns `true` if there is sufficient space and `false` otherwise.
+     */
+    IOBuffer.prototype.available = function (byteLength) {
+        if (byteLength === void 0) { byteLength = 1; }
+        return this.offset + byteLength <= this.length;
+    };
+    /**
+     * Check if little-endian mode is used for reading and writing multi-byte
+     * values.
+     * @returns `true` if little-endian mode is used, `false` otherwise.
+     */
+    IOBuffer.prototype.isLittleEndian = function () {
+        return this.littleEndian;
+    };
+    /**
+     * Set little-endian mode for reading and writing multi-byte values.
+     */
+    IOBuffer.prototype.setLittleEndian = function () {
+        this.littleEndian = true;
+        return this;
+    };
+    /**
+     * Check if big-endian mode is used for reading and writing multi-byte values.
+     * @returns `true` if big-endian mode is used, `false` otherwise.
+     */
+    IOBuffer.prototype.isBigEndian = function () {
+        return !this.littleEndian;
+    };
+    /**
+     * Switches to big-endian mode for reading and writing multi-byte values.
+     */
+    IOBuffer.prototype.setBigEndian = function () {
+        this.littleEndian = false;
+        return this;
+    };
+    /**
+     * Move the pointer n bytes forward.
+     * @param n - Number of bytes to skip.
+     */
+    IOBuffer.prototype.skip = function (n) {
+        if (n === void 0) { n = 1; }
+        this.offset += n;
+        return this;
+    };
+    /**
+     * Move the pointer to the given offset.
+     * @param offset
+     */
+    IOBuffer.prototype.seek = function (offset) {
+        this.offset = offset;
+        return this;
+    };
+    /**
+     * Store the current pointer offset.
+     * @see {@link IOBuffer#reset}
+     */
+    IOBuffer.prototype.mark = function () {
+        this._mark = this.offset;
+        return this;
+    };
+    /**
+     * Move the pointer back to the last pointer offset set by mark.
+     * @see {@link IOBuffer#mark}
+     */
+    IOBuffer.prototype.reset = function () {
+        this.offset = this._mark;
+        return this;
+    };
+    /**
+     * Push the current pointer offset to the mark stack.
+     * @see {@link IOBuffer#popMark}
+     */
+    IOBuffer.prototype.pushMark = function () {
+        this._marks.push(this.offset);
+        return this;
+    };
+    /**
+     * Pop the last pointer offset from the mark stack, and set the current
+     * pointer offset to the popped value.
+     * @see {@link IOBuffer#pushMark}
+     */
+    IOBuffer.prototype.popMark = function () {
+        var offset = this._marks.pop();
+        if (offset === undefined) {
+            throw new Error('Mark stack empty');
+        }
+        this.seek(offset);
+        return this;
+    };
+    /**
+     * Move the pointer offset back to 0.
+     */
+    IOBuffer.prototype.rewind = function () {
+        this.offset = 0;
+        return this;
+    };
+    /**
+     * Make sure the buffer has sufficient memory to write a given byteLength at
+     * the current pointer offset.
+     * If the buffer's memory is insufficient, this method will create a new
+     * buffer (a copy) with a length that is twice (byteLength + current offset).
+     * @param byteLength
+     */
+    IOBuffer.prototype.ensureAvailable = function (byteLength) {
+        if (byteLength === void 0) { byteLength = 1; }
+        if (!this.available(byteLength)) {
+            var lengthNeeded = this.offset + byteLength;
+            var newLength = lengthNeeded * 2;
+            var newArray = new Uint8Array(newLength);
+            newArray.set(new Uint8Array(this.buffer));
+            this.buffer = newArray.buffer;
+            this.length = this.byteLength = newLength;
+            this._data = new DataView(this.buffer);
+        }
+        return this;
+    };
+    /**
+     * Read a byte and return false if the byte's value is 0, or true otherwise.
+     * Moves pointer forward by one byte.
+     */
+    IOBuffer.prototype.readBoolean = function () {
+        return this.readUint8() !== 0;
+    };
+    /**
+     * Read a signed 8-bit integer and move pointer forward by 1 byte.
+     */
+    IOBuffer.prototype.readInt8 = function () {
+        return this._data.getInt8(this.offset++);
+    };
+    /**
+     * Read an unsigned 8-bit integer and move pointer forward by 1 byte.
+     */
+    IOBuffer.prototype.readUint8 = function () {
+        return this._data.getUint8(this.offset++);
+    };
+    /**
+     * Alias for {@link IOBuffer#readUint8}.
+     */
+    IOBuffer.prototype.readByte = function () {
+        return this.readUint8();
+    };
+    /**
+     * Read `n` bytes and move pointer forward by `n` bytes.
+     */
+    IOBuffer.prototype.readBytes = function (n) {
+        if (n === void 0) { n = 1; }
+        var bytes = new Uint8Array(n);
+        for (var i = 0; i < n; i++) {
+            bytes[i] = this.readByte();
+        }
+        return bytes;
+    };
+    /**
+     * Read a 16-bit signed integer and move pointer forward by 2 bytes.
+     */
+    IOBuffer.prototype.readInt16 = function () {
+        var value = this._data.getInt16(this.offset, this.littleEndian);
+        this.offset += 2;
+        return value;
+    };
+    /**
+     * Read a 16-bit unsigned integer and move pointer forward by 2 bytes.
+     */
+    IOBuffer.prototype.readUint16 = function () {
+        var value = this._data.getUint16(this.offset, this.littleEndian);
+        this.offset += 2;
+        return value;
+    };
+    /**
+     * Read a 32-bit signed integer and move pointer forward by 4 bytes.
+     */
+    IOBuffer.prototype.readInt32 = function () {
+        var value = this._data.getInt32(this.offset, this.littleEndian);
+        this.offset += 4;
+        return value;
+    };
+    /**
+     * Read a 32-bit unsigned integer and move pointer forward by 4 bytes.
+     */
+    IOBuffer.prototype.readUint32 = function () {
+        var value = this._data.getUint32(this.offset, this.littleEndian);
+        this.offset += 4;
+        return value;
+    };
+    /**
+     * Read a 32-bit floating number and move pointer forward by 4 bytes.
+     */
+    IOBuffer.prototype.readFloat32 = function () {
+        var value = this._data.getFloat32(this.offset, this.littleEndian);
+        this.offset += 4;
+        return value;
+    };
+    /**
+     * Read a 64-bit floating number and move pointer forward by 8 bytes.
+     */
+    IOBuffer.prototype.readFloat64 = function () {
+        var value = this._data.getFloat64(this.offset, this.littleEndian);
+        this.offset += 8;
+        return value;
+    };
+    /**
+     * Read a 1-byte ASCII character and move pointer forward by 1 byte.
+     */
+    IOBuffer.prototype.readChar = function () {
+        return String.fromCharCode(this.readInt8());
+    };
+    /**
+     * Read `n` 1-byte ASCII characters and move pointer forward by `n` bytes.
+     */
+    IOBuffer.prototype.readChars = function (n) {
+        if (n === void 0) { n = 1; }
+        var result = '';
+        for (var i = 0; i < n; i++) {
+            result += this.readChar();
+        }
+        return result;
+    };
+    /**
+     * Read the next `n` bytes, return a UTF-8 decoded string and move pointer
+     * forward by `n` bytes.
+     */
+    IOBuffer.prototype.readUtf8 = function (n) {
+        if (n === void 0) { n = 1; }
+        return utf8.decode(this.readBytes(n));
+    };
+    /**
+     * Write 0xff if the passed value is truthy, 0x00 otherwise and move pointer
+     * forward by 1 byte.
+     */
+    IOBuffer.prototype.writeBoolean = function (value) {
+        this.writeUint8(value ? 0xff : 0x00);
+        return this;
+    };
+    /**
+     * Write `value` as an 8-bit signed integer and move pointer forward by 1 byte.
+     */
+    IOBuffer.prototype.writeInt8 = function (value) {
+        this.ensureAvailable(1);
+        this._data.setInt8(this.offset++, value);
+        this._updateLastWrittenByte();
+        return this;
+    };
+    /**
+     * Write `value` as an 8-bit unsigned integer and move pointer forward by 1
+     * byte.
+     */
+    IOBuffer.prototype.writeUint8 = function (value) {
+        this.ensureAvailable(1);
+        this._data.setUint8(this.offset++, value);
+        this._updateLastWrittenByte();
+        return this;
+    };
+    /**
+     * An alias for {@link IOBuffer#writeUint8}.
+     */
+    IOBuffer.prototype.writeByte = function (value) {
+        return this.writeUint8(value);
+    };
+    /**
+     * Write all elements of `bytes` as uint8 values and move pointer forward by
+     * `bytes.length` bytes.
+     */
+    IOBuffer.prototype.writeBytes = function (bytes) {
+        this.ensureAvailable(bytes.length);
+        for (var i = 0; i < bytes.length; i++) {
+            this._data.setUint8(this.offset++, bytes[i]);
+        }
+        this._updateLastWrittenByte();
+        return this;
+    };
+    /**
+     * Write `value` as a 16-bit signed integer and move pointer forward by 2
+     * bytes.
+     */
+    IOBuffer.prototype.writeInt16 = function (value) {
+        this.ensureAvailable(2);
+        this._data.setInt16(this.offset, value, this.littleEndian);
+        this.offset += 2;
+        this._updateLastWrittenByte();
+        return this;
+    };
+    /**
+     * Write `value` as a 16-bit unsigned integer and move pointer forward by 2
+     * bytes.
+     */
+    IOBuffer.prototype.writeUint16 = function (value) {
+        this.ensureAvailable(2);
+        this._data.setUint16(this.offset, value, this.littleEndian);
+        this.offset += 2;
+        this._updateLastWrittenByte();
+        return this;
+    };
+    /**
+     * Write `value` as a 32-bit signed integer and move pointer forward by 4
+     * bytes.
+     */
+    IOBuffer.prototype.writeInt32 = function (value) {
+        this.ensureAvailable(4);
+        this._data.setInt32(this.offset, value, this.littleEndian);
+        this.offset += 4;
+        this._updateLastWrittenByte();
+        return this;
+    };
+    /**
+     * Write `value` as a 32-bit unsigned integer and move pointer forward by 4
+     * bytes.
+     */
+    IOBuffer.prototype.writeUint32 = function (value) {
+        this.ensureAvailable(4);
+        this._data.setUint32(this.offset, value, this.littleEndian);
+        this.offset += 4;
+        this._updateLastWrittenByte();
+        return this;
+    };
+    /**
+     * Write `value` as a 32-bit floating number and move pointer forward by 4
+     * bytes.
+     */
+    IOBuffer.prototype.writeFloat32 = function (value) {
+        this.ensureAvailable(4);
+        this._data.setFloat32(this.offset, value, this.littleEndian);
+        this.offset += 4;
+        this._updateLastWrittenByte();
+        return this;
+    };
+    /**
+     * Write `value` as a 64-bit floating number and move pointer forward by 8
+     * bytes.
+     */
+    IOBuffer.prototype.writeFloat64 = function (value) {
+        this.ensureAvailable(8);
+        this._data.setFloat64(this.offset, value, this.littleEndian);
+        this.offset += 8;
+        this._updateLastWrittenByte();
+        return this;
+    };
+    /**
+     * Write the charCode of `str`'s first character as an 8-bit unsigned integer
+     * and move pointer forward by 1 byte.
+     */
+    IOBuffer.prototype.writeChar = function (str) {
+        return this.writeUint8(str.charCodeAt(0));
+    };
+    /**
+     * Write the charCodes of all `str`'s characters as 8-bit unsigned integers
+     * and move pointer forward by `str.length` bytes.
+     */
+    IOBuffer.prototype.writeChars = function (str) {
+        for (var i = 0; i < str.length; i++) {
+            this.writeUint8(str.charCodeAt(i));
+        }
+        return this;
+    };
+    /**
+     * UTF-8 encode and write `str` to the current pointer offset and move pointer
+     * forward according to the encoded length.
+     */
+    IOBuffer.prototype.writeUtf8 = function (str) {
+        return this.writeBytes(utf8.encode(str));
+    };
+    /**
+     * Export a Uint8Array view of the internal buffer.
+     * The view starts at the byte offset and its length
+     * is calculated to stop at the last written byte or the original length.
+     */
+    IOBuffer.prototype.toArray = function () {
+        return new Uint8Array(this.buffer, this.byteOffset, this.lastWrittenByte);
+    };
+    /**
+     * Update the last written byte offset
+     * @private
+     */
+    IOBuffer.prototype._updateLastWrittenByte = function () {
+        if (this.offset > this.lastWrittenByte) {
+            this.lastWrittenByte = this.offset;
+        }
+    };
+    return IOBuffer;
+}());
+/*
+ * Copyright 2017 Sam Thorogood. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+var utf8;
+(function (utf8) {
+    var polyfill;
+    (function (polyfill) {
+        /**
+         * @constructor
+         * @param {string=} utfLabel
+         */
+        function FastTextEncoder(utfLabel) {
+            if (utfLabel === void 0) { utfLabel = 'utf-8'; }
+            if (utfLabel !== 'utf-8') {
+                throw new RangeError("Failed to construct 'TextEncoder': The encoding label provided ('" + utfLabel + "') is invalid.");
+            }
+        }
+        Object.defineProperty(FastTextEncoder.prototype, 'encoding', {
+            value: 'utf-8',
+        });
+        /**
+         * @param {string} string
+         * @param {{stream: boolean}=} options
+         * @return {!Uint8Array}
+         */
+        FastTextEncoder.prototype.encode = function (string, options) {
+            if (options === void 0) { options = { stream: false }; }
+            if (options.stream) {
+                throw new Error("Failed to encode: the 'stream' option is unsupported.");
+            }
+            var pos = 0;
+            var len = string.length;
+            var out = [];
+            var at = 0; // output position
+            var tlen = Math.max(32, len + (len >> 1) + 7); // 1.5x size
+            var target = new Uint8Array((tlen >> 3) << 3); // ... but at 8 byte offset
+            while (pos < len) {
+                var value = string.charCodeAt(pos++);
+                if (value >= 0xd800 && value <= 0xdbff) {
+                    // high surrogate
+                    if (pos < len) {
+                        var extra = string.charCodeAt(pos);
+                        if ((extra & 0xfc00) === 0xdc00) {
+                            ++pos;
+                            value = ((value & 0x3ff) << 10) + (extra & 0x3ff) + 0x10000;
+                        }
+                    }
+                    if (value >= 0xd800 && value <= 0xdbff) {
+                        continue; // drop lone surrogate
+                    }
+                }
+                // expand the buffer if we couldn't write 4 bytes
+                if (at + 4 > target.length) {
+                    tlen += 8; // minimum extra
+                    tlen *= 1.0 + (pos / string.length) * 2; // take 2x the remaining
+                    tlen = (tlen >> 3) << 3; // 8 byte offset
+                    var update = new Uint8Array(tlen);
+                    update.set(target);
+                    target = update;
+                }
+                if ((value & 0xffffff80) === 0) {
+                    // 1-byte
+                    target[at++] = value; // ASCII
+                    continue;
+                }
+                else if ((value & 0xfffff800) === 0) {
+                    // 2-byte
+                    target[at++] = ((value >> 6) & 0x1f) | 0xc0;
+                }
+                else if ((value & 0xffff0000) === 0) {
+                    // 3-byte
+                    target[at++] = ((value >> 12) & 0x0f) | 0xe0;
+                    target[at++] = ((value >> 6) & 0x3f) | 0x80;
+                }
+                else if ((value & 0xffe00000) === 0) {
+                    // 4-byte
+                    target[at++] = ((value >> 18) & 0x07) | 0xf0;
+                    target[at++] = ((value >> 12) & 0x3f) | 0x80;
+                    target[at++] = ((value >> 6) & 0x3f) | 0x80;
+                }
+                else {
+                    // FIXME: do we care
+                    continue;
+                }
+                target[at++] = (value & 0x3f) | 0x80;
+            }
+            return target.slice(0, at);
+        };
+        /**
+         * @constructor
+         * @param {string=} utfLabel
+         * @param {{fatal: boolean}=} options
+         */
+        function FastTextDecoder(utfLabel, options) {
+            if (utfLabel === void 0) { utfLabel = 'utf-8'; }
+            if (options === void 0) { options = { fatal: false }; }
+            if (utfLabel !== 'utf-8') {
+                throw new RangeError("Failed to construct 'TextDecoder': The encoding label provided ('" + utfLabel + "') is invalid.");
+            }
+            if (options.fatal) {
+                throw new Error("Failed to construct 'TextDecoder': the 'fatal' option is unsupported.");
+            }
+        }
+        Object.defineProperty(FastTextDecoder.prototype, 'encoding', {
+            value: 'utf-8',
+        });
+        Object.defineProperty(FastTextDecoder.prototype, 'fatal', { value: false });
+        Object.defineProperty(FastTextDecoder.prototype, 'ignoreBOM', {
+            value: false,
+        });
+        /**
+         * @param {(!ArrayBuffer|!ArrayBufferView)} buffer
+         * @param {{stream: boolean}=} options
+         */
+        FastTextDecoder.prototype.decode = function (buffer, options) {
+            if (options === void 0) { options = { stream: false }; }
+            if (options['stream']) {
+                throw new Error("Failed to decode: the 'stream' option is unsupported.");
+            }
+            var bytes = new Uint8Array(buffer);
+            var pos = 0;
+            var len = bytes.length;
+            var out = [];
+            while (pos < len) {
+                var byte1 = bytes[pos++];
+                if (byte1 === 0) {
+                    break; // NULL
+                }
+                if ((byte1 & 0x80) === 0) {
+                    // 1-byte
+                    out.push(byte1);
+                }
+                else if ((byte1 & 0xe0) === 0xc0) {
+                    // 2-byte
+                    var byte2 = bytes[pos++] & 0x3f;
+                    out.push(((byte1 & 0x1f) << 6) | byte2);
+                }
+                else if ((byte1 & 0xf0) === 0xe0) {
+                    var byte2 = bytes[pos++] & 0x3f;
+                    var byte3 = bytes[pos++] & 0x3f;
+                    out.push(((byte1 & 0x1f) << 12) | (byte2 << 6) | byte3);
+                }
+                else if ((byte1 & 0xf8) === 0xf0) {
+                    var byte2 = bytes[pos++] & 0x3f;
+                    var byte3 = bytes[pos++] & 0x3f;
+                    var byte4 = bytes[pos++] & 0x3f;
+                    // this can be > 0xffff, so possibly generate surrogates
+                    var codepoint = ((byte1 & 0x07) << 0x12) | (byte2 << 0x0c) | (byte3 << 0x06) | byte4;
+                    if (codepoint > 0xffff) {
+                        // codepoint &= ~0x10000;
+                        codepoint -= 0x10000;
+                        out.push(((codepoint >>> 10) & 0x3ff) | 0xd800);
+                        codepoint = 0xdc00 | (codepoint & 0x3ff);
+                    }
+                    out.push(codepoint);
+                }
+                else {
+                    // FIXME: we're ignoring this
+                }
+            }
+            return String.fromCharCode.apply(null, out);
+        };
+    })(polyfill = utf8.polyfill || (utf8.polyfill = {}));
+})(utf8 || (utf8 = {}));
+var utf8;
+(function (utf8) {
+    // eslint-disable-next-line import/no-unassigned-import
+    var decoder = new TextDecoder('utf-8');
+    function decode(bytes) {
+        return decoder.decode(bytes);
+    }
+    utf8.decode = decode;
+    var encoder = new TextEncoder();
+    function encode(str) {
+        return encoder.encode(str);
+    }
+    utf8.encode = encode;
+})(utf8 || (utf8 = {}));
 var data;
 (function (data_1) {
     data_1.STREAMING = 4294967295;
