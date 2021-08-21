@@ -28,7 +28,7 @@ module header {
         header.version = version;
 
         // List of dimensions
-        var dimList = dimensionsList(buffer);
+        const dimList = dimensionsList(buffer);
         header.recordDimension.id = dimList.recordId; // id of the unlimited dimension
         header.recordDimension.name = dimList.recordName; // name of the unlimited dimension
         header.dimensions = dimList.dimensions;
@@ -37,7 +37,7 @@ module header {
         header.globalAttributes = attributesList(buffer);
 
         // List of variables
-        var variables = variablesList(buffer, dimList.recordId, version);
+        const variables = variablesList(buffer, dimList.recordId, version);
         header.variables = variables.variables;
         header.recordDimension.recordStep = variables.recordStep;
 

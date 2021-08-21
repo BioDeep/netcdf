@@ -39,11 +39,12 @@ module header {
 
         for (var dim = 0; dim < dimensionSize; dim++) {
             // Read name
-            var name = utils.readName(buffer);
-
+            const name = utils.readName(buffer);
             // Read dimension size
             const size = buffer.readUint32();
-            if (size === NC_UNLIMITED) { // in netcdf 3 one field can be of size unlimmited
+
+            if (size === NC_UNLIMITED) {
+                // in netcdf 3 one field can be of size unlimmited
                 recordId = dim;
                 recordName = name;
             }

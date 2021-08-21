@@ -16,7 +16,8 @@ interface netcdfHeader {
 }
 
 interface dimension {
-
+    name: string;
+    size: number;
 }
 
 interface variable {
