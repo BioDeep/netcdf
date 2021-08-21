@@ -1,3 +1,5 @@
+///<reference path="../lib/IOBuffer.d.ts" />
+
 'use strict';
 
 /**
