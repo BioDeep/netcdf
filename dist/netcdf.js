@@ -228,7 +228,12 @@ var utils;
     }
     utils.padding = padding;
     function createInputBuffer(data) {
-        return new Uint8Array(data);
+        if (data instanceof Buffer) {
+            return data;
+        }
+        else {
+            return new Uint8Array(data);
+        }
     }
     utils.createInputBuffer = createInputBuffer;
     /**

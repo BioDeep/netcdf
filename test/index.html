@@ -1,0 +1,11 @@
+<script src="../dist/netcdf.js"></script>
+
+<script>
+
+    fetch("./HR2MSI mouse urinary bladder S096 - Figure1.cdf", { method: "get", responseType: "arraybuffer" })
+        .then(res => new NetCDFReader(res.arraybuffer))
+        .then(function (cdf) {
+            console.log(cdf);
+        });
+
+</script>
