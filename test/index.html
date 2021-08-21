@@ -2,10 +2,16 @@
 
 <script>
 
-    fetch("./HR2MSI mouse urinary bladder S096 - Figure1.cdf", { method: "get", responseType: "arraybuffer" })
-        .then(res => new NetCDFReader(res.arraybuffer))
-        .then(function (cdf) {
+let xhr = new XMLHttpRequest();
+xhr.open("GET", "./HR2MSI mouse urinary bladder S096 - Figure1.cdf")
+xhr.send();
+xhr.onreadystatechange = function () {
+if (req.readyState === 4 ) {
+    var buffer = xhr.response;
+	var cdf = new NetCDFReader(buffer);		
             console.log(cdf);
-        });
+    }
+}
+
 
 </script>
