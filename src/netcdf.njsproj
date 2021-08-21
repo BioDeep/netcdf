@@ -36,7 +36,10 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="data.ts" />
-    <TypeScriptCompile Include="header.ts" />
+    <TypeScriptCompile Include="header\reader.ts" />
+    <TypeScriptCompile Include="header\header.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="index.ts" />
     <TypeScriptCompile Include="toString.ts" />
     <TypeScriptCompile Include="types\types.ts" />
@@ -46,6 +49,7 @@
     <TypeScriptCompile Include="utils.ts" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="header\" />
     <Folder Include="types\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />

@@ -2,7 +2,10 @@
 
 /**
  * Reads a NetCDF v3.x file
+ * 
  * https://www.unidata.ucar.edu/software/netcdf/docs/file_format_specifications.html
+ * https://github.com/cheminfo/netcdfjs
+ * 
  * @param {ArrayBuffer} data - ArrayBuffer or any Typed Array (including Node.js' Buffer from v4) with the data
  * @constructor
  */

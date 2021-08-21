@@ -19,10 +19,10 @@ module header {
      *  * `globalAttributes`: List of global attributes
      *  * `variables`: List of variables
      */
-    function header(buffer, version) {
+    export function header(buffer, version): netcdfHeader {
         // Length of record dimension
         // sum of the varSize's of all the record variables.
-        var header = { recordDimension: { length: buffer.readUint32() } };
+        const header: netcdfHeader = { recordDimension: { length: buffer.readUint32() } };
 
         // Version
         header.version = version;
@@ -58,17 +58,20 @@ module header {
      *  * `recordName`: name of the dimension that has unlimited size
      */
     function dimensionsList(buffer) {
-        var recordId, recordName;
         const dimList = buffer.readUint32();
+
+        let recordId: number = null;
+        let recordName: string = null;
+
         if (dimList === ZERO) {
             utils.notNetcdf((buffer.readUint32() !== ZERO), 'wrong empty tag for list of dimensions');
-            return [];
+            return {};
         } else {
             utils.notNetcdf((dimList !== NC_DIMENSION), 'wrong tag for list of dimensions');
 
             // Length of dimensions
             const dimensionSize = buffer.readUint32();
-            var dimensions = new Array(dimensionSize);
+            var dimensions: dimension[] = new Array(dimensionSize);
             for (var dim = 0; dim < dimensionSize; dim++) {
                 // Read name
                 var name = utils.readName(buffer);
