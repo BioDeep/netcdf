@@ -115,6 +115,28 @@ class NetCDFReader {
     }
 
     /**
+     * Check if a dataVariable exists
+     * @param {string} variableName - Name of the variable to find
+     * @return {boolean}
+     */
+     dataVariableExists(variableName: string) {
+        const variable = this.header.variables.find(function (val) {
+            return val.name === variableName;
+        });
+        return variable !== undefined;
+    }
+
+    /**
+     * Check if an attribute exists
+     * @param {string} attributeName - Name of the attribute to find
+     * @return {boolean}
+     */
+    attributeExists(attributeName: string) {
+        const attribute = this.globalAttributes.find(val => val.name === attributeName);
+        return attribute !== undefined;
+    }
+
+    /**
      * Retrieves the data for a given variable
      * @param {string|object} variableName - Name of the variable to search or variable object
      * @return {Array} - List with the variable values
@@ -144,28 +166,6 @@ class NetCDFReader {
             // non-record variable case
             return Type.nonRecord(this.buffer, variable);
         }
-    }
-
-    /**
-     * Check if a dataVariable exists
-     * @param {string} variableName - Name of the variable to find
-     * @return {boolean}
-     */
-    dataVariableExists(variableName: string) {
-        const variable = this.header.variables.find(function (val) {
-            return val.name === variableName;
-        });
-        return variable !== undefined;
-    }
-
-    /**
-     * Check if an attribute exists
-     * @param {string} attributeName - Name of the attribute to find
-     * @return {boolean}
-     */
-    attributeExists(attributeName: string) {
-        const attribute = this.globalAttributes.find(val => val.name === attributeName);
-        return attribute !== undefined;
     }
 
     public static fetch(url: string, callback: XhrFetch) {
