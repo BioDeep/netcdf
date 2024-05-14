@@ -6,7 +6,7 @@ namespace Type {
     * @param {number} type - integer that represents the type
     * @return {string} - parsed value of the type
     */
-    export function num2str(type) {
+    export function num2str(type: string | number): 'byte' | 'char' | 'short' | 'int' | 'float' | 'double' | 'undefined' {
         switch (Number(type)) {
             case cdfTypes.BYTE:
                 return 'byte';
@@ -32,7 +32,7 @@ namespace Type {
      * @param {number} type - integer that represents the type
      * @return {number} -size of the type
      */
-    export function num2bytes(type) {
+    export function num2bytes(type: number | string) {
         switch (Number(type)) {
             case cdfTypes.BYTE:
                 return 1;
@@ -58,7 +58,7 @@ namespace Type {
      * @param {string} type - string that represents the type
      * @return {number} - parsed value of the type
      */
-    export function str2num(type) {
+    export function str2num(type: string) {
         switch (String(type)) {
             case 'byte':
                 return cdfTypes.BYTE;
@@ -85,9 +85,9 @@ namespace Type {
      * @param {function} bufferReader - Function to read next value
      * @return {Array<number>|number}
      */
-    export function readNumber(size, bufferReader) {
+    export function readNumber(size: number, bufferReader: () => number) {
         if (size !== 1) {
-            var numbers = new Array(size);
+            var numbers: number[] = new Array(size);
             for (var i = 0; i < size; i++) {
                 numbers[i] = bufferReader();
             }

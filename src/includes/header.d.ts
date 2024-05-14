@@ -8,12 +8,14 @@ interface netcdfHeader {
     /**
      * the data variable record dimension size description
     */
-    recordDimension: {
-        length: number;
-        id?: number;
-        name?: string;
-        recordStep?: number;
-    }
+    recordDimension: recordDimension;
+}
+
+interface recordDimension {
+    length: number;
+    id?: number;
+    name?: string;
+    recordStep?: number;
 }
 
 interface dimension {

@@ -9,7 +9,7 @@ module header {
      *  * `type`: String with the type of the attribute
      *  * `value`: A number or string with the value of the attribute
      */
-    export function attributesList(buffer) {
+    export function attributesList(buffer: IOBuffer) {
         const gAttList = buffer.readUint32();
         if (gAttList === ZERO) {
             utils.notNetcdf((buffer.readUint32() !== ZERO), 'wrong empty tag for list of attributes');

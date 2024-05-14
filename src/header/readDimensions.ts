@@ -2,6 +2,12 @@ module header {
 
     const NC_UNLIMITED = 0;
 
+    export interface dimensionList {
+        dimensions: dimension[],
+        recordId: number,
+        recordName: string
+    }
+
     /**
      * List of dimensions
      * @ignore
@@ -13,12 +19,12 @@ module header {
      *  * `recordId`: the id of the dimension that has unlimited size or undefined,
      *  * `recordName`: name of the dimension that has unlimited size
      */
-    export function dimensionsList(buffer) {
+    export function dimensionsList(buffer: IOBuffer): dimensionList {
         const dimList = buffer.readUint32();
 
         if (dimList === ZERO) {
             utils.notNetcdf((buffer.readUint32() !== ZERO), 'wrong empty tag for list of dimensions');
-            return {
+            return <dimensionList>{
                 dimensions: [],
                 recordId: null,
                 recordName: null
@@ -29,7 +35,7 @@ module header {
         }
     }
 
-    function readInternal(buffer: IOBuffer) {
+    function readInternal(buffer: IOBuffer): dimensionList {
         // Length of dimensions
         const dimensionSize = buffer.readUint32();
 
@@ -55,7 +61,7 @@ module header {
             };
         }
 
-        return {
+        return <dimensionList>{
             dimensions: dimensions,
             recordId: recordId,
             recordName: recordName

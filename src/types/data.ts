@@ -11,7 +11,7 @@ module Type {
      * @param {object} variable - Variable metadata
      * @return {Array} - Data of the element
      */
-    export function nonRecord(buffer, variable) {
+    export function nonRecord(buffer: IOBuffer, variable: variable) {
         // variable type
         const type = str2num(variable.type);
 
@@ -35,7 +35,7 @@ module Type {
      * @param {object} recordDimension - Record dimension metadata
      * @return {Array} - Data of the element
      */
-    export function record(buffer, variable, recordDimension) {
+    export function record(buffer: IOBuffer, variable: variable, recordDimension: recordDimension) {
         // variable type
         const type = str2num(variable.type);
         const width = variable.size ? variable.size / num2bytes(type) : 1;
