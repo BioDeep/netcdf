@@ -1,7 +1,7 @@
 ///<reference path="../includes/IOBuffer/IOBuffer.ts" />
 ///<reference path="../includes/header.ts" />
 
-module header {
+namespace header {
 
     /**
      * List of attributes

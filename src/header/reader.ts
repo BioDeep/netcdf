@@ -3,7 +3,7 @@
 
 'use strict';
 
-module header {
+namespace header {
 
     // Grammar constants
     export const ZERO = 0;

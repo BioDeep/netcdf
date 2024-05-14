@@ -1,42 +1,45 @@
-interface netcdfHeader {
+namespace header {
 
-    version?: number;
-    globalAttributes?: attribute[];
-    variables?: variable[];
-    dimensions?: dimension[];
+    export interface netcdfHeader {
 
-    /**
-     * the data variable record dimension size description
-    */
-    recordDimension: recordDimension;
-}
+        version?: number;
+        globalAttributes?: attribute[];
+        variables?: variable[];
+        dimensions?: dimension[];
 
-interface recordDimension {
-    length: number;
-    id?: number;
-    name?: string;
-    recordStep?: number;
-}
+        /**
+         * the data variable record dimension size description
+        */
+        recordDimension: recordDimension;
+    }
 
-interface dimension {
-    name: string;
-    size: number;
-}
+    export interface recordDimension {
+        length: number;
+        id?: number;
+        name?: string;
+        recordStep?: number;
+    }
 
-interface variable extends keyindex {
-    dimensions: number[];
-    attributes: attribute[];
-    type: string;
-    size: number;
-    offset: number;
-    record: boolean;
-}
+    export interface dimension {
+        name: string;
+        size: number;
+    }
 
-interface attribute extends keyindex {
-    type: string;
-    value: any;
-}
+    export interface variable extends keyindex {
+        dimensions: number[];
+        attributes: attribute[];
+        type: string;
+        size: number;
+        offset: number;
+        record: boolean;
+    }
 
-interface keyindex {
-    name: string;
+    export interface attribute extends keyindex {
+        type: string;
+        value: any;
+    }
+
+    export interface keyindex {
+        name: string;
+    }
 }

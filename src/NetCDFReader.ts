@@ -2,6 +2,10 @@
 
 'use strict';
 
+import netcdfHeader = header.netcdfHeader;
+import recordDimension = header.recordDimension;
+import variable = header.variable;
+
 /**
  * Reads a NetCDF v3.x file
  * 
@@ -34,7 +38,7 @@ class NetCDFReader {
      *  * `name`: String with the name of the record dimension
      *  * `recordStep`: Number with the record variables step size
      */
-    get recordDimension() {
+    get recordDimension(): recordDimension {
         return this.header.recordDimension;
     }
 
@@ -67,7 +71,7 @@ class NetCDFReader {
     *  * `offset`: Number with the offset where of the variable begins
     *  * `record`: True if is a record variable, false otherwise
     */
-    get variables() {
+    get variables(): variable[] {
         return this.header.variables;
     }
 
@@ -122,7 +126,7 @@ class NetCDFReader {
      * @param {string} variableName - Name of the variable to find
      * @return {boolean}
      */
-    dataVariableExists(variableName: string) {
+    dataVariableExists(variableName: string): boolean {
         const variable = utils.find(this.header.variables, variableName);
         return variable !== undefined;
     }

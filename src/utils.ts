@@ -54,7 +54,7 @@ namespace utils {
         return name;
     }
 
-    export function find<T extends keyindex>(data: T[], key: string): T {
+    export function find<T extends header.keyindex>(data: T[], key: string): T {
         for (let o of data) {
             if (o.name === key) {
                 return o;
