@@ -5,14 +5,15 @@ interface netcdfHeader {
     variables?: variable[];
     dimensions?: dimension[];
 
+    /**
+     * the data variable record dimension size description
+    */
     recordDimension: {
         length: number;
         id?: number;
         name?: string;
         recordStep?: number;
     }
-
-
 }
 
 interface dimension {
@@ -20,8 +21,7 @@ interface dimension {
     size: number;
 }
 
-interface variable {
-    name: string;
+interface variable extends keyindex {
     dimensions: number[];
     attributes: attribute[];
     type: string;
@@ -30,8 +30,11 @@ interface variable {
     record: boolean;
 }
 
-interface attribute {
-    name: string;
+interface attribute extends keyindex {
     type: string;
     value: any;
+}
+
+interface keyindex {
+    name: string;
 }

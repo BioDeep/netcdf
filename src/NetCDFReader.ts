@@ -17,7 +17,7 @@ class NetCDFReader {
     /**
      * @return {string} - Version for the NetCDF format
      */
-    get version() {
+    get version(): 'classic format' | '64-bit offset format' {
         if (this.header.version === 1) {
             return 'classic format';
         } else {
@@ -90,11 +90,12 @@ class NetCDFReader {
 
     /**
      * Returns the value of an attribute
+     * 
      * @param {string} attributeName
      * @return {string} Value of the attributeName or null
      */
-    getAttribute(attributeName: string) {
-        const attribute = this.globalAttributes.find((val) => val.name === attributeName);
+    getAttribute(attributeName: string): any {
+        const attribute = utils.find(this.globalAttributes, attributeName);
         if (attribute) return attribute.value;
         return null;
     }
@@ -104,7 +105,7 @@ class NetCDFReader {
      * @param {string} variableName
      * @return {string} Value of the variable as a string or null
      */
-    getDataVariableAsString(variableName: string) {
+    getDataVariableAsString(variableName: string): string {
         const variable = this.getDataVariable(variableName);
         if (variable) return variable.join('');
         return null;
@@ -119,10 +120,8 @@ class NetCDFReader {
      * @param {string} variableName - Name of the variable to find
      * @return {boolean}
      */
-     dataVariableExists(variableName: string) {
-        const variable = this.header.variables.find(function (val) {
-            return val.name === variableName;
-        });
+    dataVariableExists(variableName: string) {
+        const variable = utils.find(this.header.variables, variableName);
         return variable !== undefined;
     }
 
@@ -132,7 +131,7 @@ class NetCDFReader {
      * @return {boolean}
      */
     attributeExists(attributeName: string) {
-        const attribute = this.globalAttributes.find(val => val.name === attributeName);
+        const attribute = utils.find(this.globalAttributes, attributeName);
         return attribute !== undefined;
     }
 
@@ -145,7 +144,7 @@ class NetCDFReader {
         let variable;
         if (typeof variableName === 'string') {
             // search the variable
-            variable = this.header.variables.find(val => val.name === variableName);
+            variable = utils.find(this.header.variables, variableName);
         } else {
             variable = variableName;
         }

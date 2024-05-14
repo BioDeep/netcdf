@@ -8,7 +8,7 @@ namespace utils {
      * @param {boolean} statement - Throws if true
      * @param {string} reason - Reason to throw
      */
-    export function notNetcdf(statement, reason) {
+    export function notNetcdf(statement: boolean, reason: string) {
         if (statement) {
             throw new TypeError(`Not a valid NetCDF v3.x file: ${reason}`);
         }
@@ -19,7 +19,7 @@ namespace utils {
      * @ignore
      * @param {IOBuffer} buffer - Buffer for the file data
      */
-    export function padding(buffer) {
+    export function padding(buffer: IOBuffer) {
         if ((buffer.offset % 4) !== 0) {
             buffer.skip(4 - (buffer.offset % 4));
         }
@@ -41,7 +41,7 @@ namespace utils {
      * @param {IOBuffer} buffer - Buffer for the file data
      * @return {string} - Name
      */
-    export function readName(buffer) {
+    export function readName(buffer: IOBuffer) {
         // Read name
         var nameLength = buffer.readUint32();
         var name = buffer.readChars(nameLength);
@@ -54,4 +54,13 @@ namespace utils {
         return name;
     }
 
+    export function find<T extends keyindex>(data: T[], key: string): T {
+        for (let o of data) {
+            if (o.name === key) {
+                return o;
+            }
+        }
+
+        return null;
+    }
 }

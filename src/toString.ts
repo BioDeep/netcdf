@@ -3,7 +3,7 @@
 namespace debug {
 
     export function toString(cdf: NetCDFReader): string {
-        let result = [];
+        let result: string[] = [];
 
         result.push('DIMENSIONS');
         for (let dimension of cdf.dimensions) {
@@ -28,6 +28,7 @@ namespace debug {
             }
             result.push(`  ${variable.name.padEnd(30)} = ${stringify}`);
         }
+
         return result.join('\n');
     }
 
