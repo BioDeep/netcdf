@@ -2,7 +2,12 @@
   "compilerOptions": {
     "module": "AMD",
     "target": "es5",
-    "lib": [ "dom", "es5", "dom.iterable", "scripthost" ],
+    "lib": [
+      "dom",
+      "es5",
+      "dom.iterable",
+      "scripthost"
+    ],
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
     "outDir": "../dist",
@@ -11,8 +16,8 @@
   },
   "exclude": [
     "node_modules",
-	"../node_modules",
-	"obj",
-	"bin"
+    "../node_modules",
+    "obj",
+    "bin"
   ]
 }
