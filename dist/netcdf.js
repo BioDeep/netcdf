@@ -36,7 +36,7 @@ var NetCDFReader = /** @class */ (function () {
                 return '64-bit offset format';
             }
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(NetCDFReader.prototype, "recordDimension", {
@@ -50,7 +50,7 @@ var NetCDFReader = /** @class */ (function () {
         get: function () {
             return this.header.recordDimension;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(NetCDFReader.prototype, "dimensions", {
@@ -62,7 +62,7 @@ var NetCDFReader = /** @class */ (function () {
         get: function () {
             return this.header.dimensions;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(NetCDFReader.prototype, "globalAttributes", {
@@ -75,7 +75,7 @@ var NetCDFReader = /** @class */ (function () {
         get: function () {
             return this.header.globalAttributes;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(NetCDFReader.prototype, "variables", {
@@ -92,7 +92,7 @@ var NetCDFReader = /** @class */ (function () {
         get: function () {
             return this.header.variables;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     /**
@@ -121,33 +121,6 @@ var NetCDFReader = /** @class */ (function () {
         return debug.toString(this);
     };
     /**
-     * Retrieves the data for a given variable
-     * @param {string|object} variableName - Name of the variable to search or variable object
-     * @return {Array} - List with the variable values
-     */
-    NetCDFReader.prototype.getDataVariable = function (variableName) {
-        var variable;
-        if (typeof variableName === 'string') {
-            // search the variable
-            variable = this.header.variables.find(function (val) { return val.name === variableName; });
-        }
-        else {
-            variable = variableName;
-        }
-        // throws if variable not found
-        utils.notNetcdf(variable === undefined, "variable not found: " + variableName);
-        // go to the offset position
-        this.buffer.seek(variable.offset);
-        if (variable.record) {
-            // record variable case
-            return Type.record(this.buffer, variable, this.header.recordDimension);
-        }
-        else {
-            // non-record variable case
-            return Type.nonRecord(this.buffer, variable);
-        }
-    };
-    /**
      * Check if a dataVariable exists
      * @param {string} variableName - Name of the variable to find
      * @return {boolean}
@@ -166,6 +139,33 @@ var NetCDFReader = /** @class */ (function () {
     NetCDFReader.prototype.attributeExists = function (attributeName) {
         var attribute = this.globalAttributes.find(function (val) { return val.name === attributeName; });
         return attribute !== undefined;
+    };
+    /**
+     * Retrieves the data for a given variable
+     * @param {string|object} variableName - Name of the variable to search or variable object
+     * @return {Array} - List with the variable values
+     */
+    NetCDFReader.prototype.getDataVariable = function (variableName) {
+        var variable;
+        if (typeof variableName === 'string') {
+            // search the variable
+            variable = this.header.variables.find(function (val) { return val.name === variableName; });
+        }
+        else {
+            variable = variableName;
+        }
+        // throws if variable not found
+        utils.notNetcdf(variable === undefined, "variable not found: ".concat(variableName));
+        // go to the offset position
+        this.buffer.seek(variable.offset);
+        if (variable.record) {
+            // record variable case
+            return Type.record(this.buffer, variable, this.header.recordDimension);
+        }
+        else {
+            // non-record variable case
+            return Type.nonRecord(this.buffer, variable);
+        }
     };
     NetCDFReader.fetch = function (url, callback) {
         var xhr = new XMLHttpRequest();
@@ -189,13 +189,13 @@ var debug;
         result.push('DIMENSIONS');
         for (var _i = 0, _a = cdf.dimensions; _i < _a.length; _i++) {
             var dimension = _a[_i];
-            result.push("  " + dimension.name.padEnd(30) + " = size: " + dimension.size);
+            result.push("  ".concat(dimension.name.padEnd(30), " = size: ").concat(dimension.size));
         }
         result.push('');
         result.push('GLOBAL ATTRIBUTES');
         for (var _b = 0, _c = cdf.globalAttributes; _b < _c.length; _b++) {
             var attribute = _c[_b];
-            result.push("  " + attribute.name.padEnd(30) + " = " + attribute.value);
+            result.push("  ".concat(attribute.name.padEnd(30), " = ").concat(attribute.value));
         }
         var variables = JSON.parse(JSON.stringify(cdf.variables));
         result.push('');
@@ -207,9 +207,9 @@ var debug;
             if (stringify.length > 50)
                 stringify = stringify.substring(0, 50);
             if (!isNaN(variable.value.length)) {
-                stringify += " (length: " + variable.value.length + ")";
+                stringify += " (length: ".concat(variable.value.length, ")");
             }
-            result.push("  " + variable.name.padEnd(30) + " = " + stringify);
+            result.push("  ".concat(variable.name.padEnd(30), " = ").concat(stringify));
         }
         return result.join('\n');
     }
@@ -225,7 +225,7 @@ var utils;
      */
     function notNetcdf(statement, reason) {
         if (statement) {
-            throw new TypeError("Not a valid NetCDF v3.x file: " + reason);
+            throw new TypeError("Not a valid NetCDF v3.x file: ".concat(reason));
         }
     }
     utils.notNetcdf = notNetcdf;
@@ -302,7 +302,7 @@ var header;
             var name = utils.readName(buffer);
             // Read type
             var type = buffer.readUint32();
-            utils.notNetcdf(((type < 1) || (type > 6)), "non valid type " + type);
+            utils.notNetcdf(((type < 1) || (type > 6)), "non valid type ".concat(type));
             // Read attribute
             var size = buffer.readUint32();
             var value = Type.readType(buffer, type, size);
@@ -427,7 +427,7 @@ var header;
             var attributes = header.attributesList(buffer);
             // Read type
             var type = buffer.readUint32();
-            utils.notNetcdf(((type < 1) && (type > 6)), "non valid type " + type);
+            utils.notNetcdf(((type < 1) && (type > 6)), "non valid type ".concat(type));
             // Read variable size
             // The 32-bit varSize field is not large enough to contain the size of variables that require
             // more than 2^32 - 4 bytes, so 2^32 - 1 is used in the varSize field for such variables.
@@ -449,7 +449,9 @@ var header;
                 dimensions: dimensionsIds,
                 attributes: attributes,
                 type: Type.num2str(type),
-                size: varSize, offset: offset, record: record
+                size: varSize,
+                offset: offset,
+                record: record
             };
         }
         return {
@@ -952,7 +954,7 @@ var utf8;
         function FastTextEncoder(utfLabel) {
             if (utfLabel === void 0) { utfLabel = 'utf-8'; }
             if (utfLabel !== 'utf-8') {
-                throw new RangeError("Failed to construct 'TextEncoder': The encoding label provided ('" + utfLabel + "') is invalid.");
+                throw new RangeError("Failed to construct 'TextEncoder': The encoding label provided ('".concat(utfLabel, "') is invalid."));
             }
         }
         Object.defineProperty(FastTextEncoder.prototype, 'encoding', {
@@ -1035,7 +1037,7 @@ var utf8;
             if (utfLabel === void 0) { utfLabel = 'utf-8'; }
             if (options === void 0) { options = { fatal: false }; }
             if (utfLabel !== 'utf-8') {
-                throw new RangeError("Failed to construct 'TextDecoder': The encoding label provided ('" + utfLabel + "') is invalid.");
+                throw new RangeError("Failed to construct 'TextDecoder': The encoding label provided ('".concat(utfLabel, "') is invalid."));
             }
             if (options.fatal) {
                 throw new Error("Failed to construct 'TextDecoder': the 'fatal' option is unsupported.");
@@ -1290,7 +1292,7 @@ var Type;
                 return readNumber(size, buffer.readFloat64.bind(buffer));
             /* istanbul ignore next */
             default:
-                utils.notNetcdf(true, "non valid type " + type);
+                utils.notNetcdf(true, "non valid type ".concat(type));
                 return undefined;
         }
     }
