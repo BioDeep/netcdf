@@ -1,4 +1,8 @@
-module header {
+///<reference path="../includes/IOBuffer/IOBuffer.ts" />
+///<reference path="../includes/header.ts" />
+
+namespace header {
+
     /**
  * List of variables
  * @ignore

@@ -1,3 +1,5 @@
+///<reference path="./includes/header.ts" />
+
 'use strict';
 
 /**

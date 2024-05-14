@@ -1,3 +1,6 @@
+///<reference path="../includes/IOBuffer/IOBuffer.ts" />
+///<reference path="../includes/header.ts" />
+
 module header {
 
     const NC_UNLIMITED = 0;
