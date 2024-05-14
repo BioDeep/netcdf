@@ -1,4 +1,4 @@
-///<reference path="./includes/header.d.ts" />
+///<reference path="./includes/header.ts" />
 'use strict';
 /**
  * Reads a NetCDF v3.x file
@@ -710,7 +710,7 @@ var IOBuffer = /** @class */ (function () {
     return IOBuffer;
 }());
 ///<reference path="../includes/IOBuffer/IOBuffer.ts" />
-///<reference path="../includes/header.d.ts" />
+///<reference path="../includes/header.ts" />
 var header;
 (function (header) {
     /**
@@ -759,7 +759,7 @@ var header;
     }
 })(header || (header = {}));
 ///<reference path="../includes/IOBuffer/IOBuffer.ts" />
-///<reference path="../includes/header.d.ts" />
+///<reference path="../includes/header.ts" />
 var header;
 (function (header) {
     var NC_UNLIMITED = 0;
@@ -819,7 +819,7 @@ var header;
     }
 })(header || (header = {}));
 ///<reference path="../includes/IOBuffer/IOBuffer.ts" />
-///<reference path="../includes/header.d.ts" />
+///<reference path="../includes/header.ts" />
 var header;
 (function (header) {
     /**
