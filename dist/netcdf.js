@@ -97,11 +97,12 @@ var NetCDFReader = /** @class */ (function () {
     });
     /**
      * Returns the value of an attribute
+     *
      * @param {string} attributeName
      * @return {string} Value of the attributeName or null
      */
     NetCDFReader.prototype.getAttribute = function (attributeName) {
-        var attribute = this.globalAttributes.find(function (val) { return val.name === attributeName; });
+        var attribute = utils.find(this.globalAttributes, attributeName);
         if (attribute)
             return attribute.value;
         return null;
@@ -126,9 +127,7 @@ var NetCDFReader = /** @class */ (function () {
      * @return {boolean}
      */
     NetCDFReader.prototype.dataVariableExists = function (variableName) {
-        var variable = this.header.variables.find(function (val) {
-            return val.name === variableName;
-        });
+        var variable = utils.find(this.header.variables, variableName);
         return variable !== undefined;
     };
     /**
@@ -137,7 +136,7 @@ var NetCDFReader = /** @class */ (function () {
      * @return {boolean}
      */
     NetCDFReader.prototype.attributeExists = function (attributeName) {
-        var attribute = this.globalAttributes.find(function (val) { return val.name === attributeName; });
+        var attribute = utils.find(this.globalAttributes, attributeName);
         return attribute !== undefined;
     };
     /**
@@ -149,7 +148,7 @@ var NetCDFReader = /** @class */ (function () {
         var variable;
         if (typeof variableName === 'string') {
             // search the variable
-            variable = this.header.variables.find(function (val) { return val.name === variableName; });
+            variable = utils.find(this.header.variables, variableName);
         }
         else {
             variable = variableName;
@@ -269,6 +268,16 @@ var utils;
         return name;
     }
     utils.readName = readName;
+    function find(data, key) {
+        for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
+            var o = data_1[_i];
+            if (o.name === key) {
+                return o;
+            }
+        }
+        return null;
+    }
+    utils.find = find;
 })(utils || (utils = {}));
 var header;
 (function (header) {
